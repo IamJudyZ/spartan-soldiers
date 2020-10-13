@@ -107,14 +107,18 @@ class minHeap {
 		}
 		
 		else {
+			//System.out.println(String.format("heapifying node %s with score %d", node.name, node.score));
 			if (node.score > left.score || node.score > right.score) {
 				if (left.score <= right.score) {
+					//System.out.println("swapping left");
 					swap(node, left);
-					heapify(left);
+					heapify(leftChild(left));
 				}
 				else {
+					//System.out.println("swapping right");
+					//System.out.println(String.format("swapping %d with right node %d", node.score, right.score));
 					swap(node, right);
-					heapify(right);
+					heapify(rightChild(right));
 				}
 			}
 		}						
@@ -128,6 +132,7 @@ class minHeap {
 				this.heap[0] = this.heap[numOfElements-1];
 				this.heap[numOfElements-1] = null;
 				this.heap[0].position = 1;
+				//System.out.println(String.format("gonna heapify elt %s, score %d", this.heap[0].name, this.heap[0].score));
 				heapify(this.heap[0]);
 			}
 			else {
@@ -159,6 +164,8 @@ public class PA3 {
 			map.put(user[0], newSpartan);
 			h.insert(newSpartan);
 		}
+		
+		/*
 		System.out.println("full tree at after insertion");
 
 		for (int i = 0; i<h.heap.length; i++) {
@@ -166,6 +173,7 @@ public class PA3 {
 				System.out.println(String.format("name %s, score %d", h.heap[i].name, h.heap[i].score));
 			}
 		}
+		*/
 		
 		//everything works so far, so insert works.
 		
@@ -177,6 +185,7 @@ public class PA3 {
 			if (first == 1) {
 				Spartan soldier = map.get(user[1]);
 				soldier.score += Integer.parseInt(user[2]);
+				h.heapify(h.heap[soldier.position-1]);
 				h.heapify(h.heap[0]);
 
 			}
@@ -193,13 +202,16 @@ public class PA3 {
 					}
 				}
 				System.out.println(h.numOfElements);
+				
 				System.out.println(String.format("full tree at after popping under k = %d", k));
 
+				
 				for (int j = 0; j<h.heap.length; j++) {
 					if (h.heap[j] != null) {
 						System.out.println(String.format("name %s, score %d", h.heap[j].name, h.heap[j].score));
 					}
 				}
+				
 
 			}
 			
