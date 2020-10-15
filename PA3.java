@@ -4,7 +4,7 @@ import java.io.*;
 
 class Spartan {
 	String name;
-	int score;
+	long score;
 	int position;
 	
 	public Spartan(String n, int s, int p) {
@@ -26,6 +26,9 @@ class minHeap {
 	}
 	
 	Spartan parent(Spartan soldier) {
+		if (soldier.position <= 1) {
+			return soldier;
+		}
 		return (heap[soldier.position/2-1]);
 	}
 	
@@ -60,17 +63,20 @@ class minHeap {
 		numOfElements++;
 		soldier.position = numOfElements;
 		
+		bubbleUp(soldier);
+		
+	}
+	
+	void bubbleUp(Spartan soldier) {
 		if (numOfElements > 1) {
 			Spartan current = soldier;
 			Spartan currentParent = parent(current);
 			
 			while (current.score < currentParent.score) {
 				swap(current, currentParent);
-				current = currentParent;
 				currentParent = parent(current);
 			}
 		}
-		
 	}
 	
 	void swap(Spartan one, Spartan two) {
@@ -102,23 +108,18 @@ class minHeap {
 		if (left != null && right == null) {
 			if (node.score > left.score) {
 				swap(node, left);
-				heapify(left);
 			}
 		}
 		
 		else {
-			//System.out.println(String.format("heapifying node %s with score %d", node.name, node.score));
 			if (node.score > left.score || node.score > right.score) {
 				if (left.score <= right.score) {
-					//System.out.println("swapping left");
 					swap(node, left);
-					heapify(leftChild(left));
+					heapify(node);
 				}
 				else {
-					//System.out.println("swapping right");
-					//System.out.println(String.format("swapping %d with right node %d", node.score, right.score));
 					swap(node, right);
-					heapify(rightChild(right));
+					heapify(node);
 				}
 			}
 		}						
@@ -132,13 +133,13 @@ class minHeap {
 				this.heap[0] = this.heap[numOfElements-1];
 				this.heap[numOfElements-1] = null;
 				this.heap[0].position = 1;
-				//System.out.println(String.format("gonna heapify elt %s, score %d", this.heap[0].name, this.heap[0].score));
 				heapify(this.heap[0]);
 			}
 			else {
 				this.heap[0] = null;
 			}
 			this.numOfElements--;
+			least.position = -1;
 			return least;
 		}
 		return null;
@@ -165,17 +166,6 @@ public class PA3 {
 			h.insert(newSpartan);
 		}
 		
-		/*
-		System.out.println("full tree at after insertion");
-
-		for (int i = 0; i<h.heap.length; i++) {
-			if (h.heap[i] != null) {
-				System.out.println(String.format("name %s, score %d", h.heap[i].name, h.heap[i].score));
-			}
-		}
-		*/
-		
-		//everything works so far, so insert works.
 		
 		int lines = Integer.parseInt(scn.nextLine());
 		
@@ -186,8 +176,7 @@ public class PA3 {
 				Spartan soldier = map.get(user[1]);
 				soldier.score += Integer.parseInt(user[2]);
 				h.heapify(h.heap[soldier.position-1]);
-				h.heapify(h.heap[0]);
-
+				
 			}
 			else if (first == 2) {
 				long k = Long.parseLong(user[1]);
@@ -201,18 +190,9 @@ public class PA3 {
 						keepGoing = false;
 					}
 				}
+				
+				
 				System.out.println(h.numOfElements);
-				
-				System.out.println(String.format("full tree at after popping under k = %d", k));
-
-				
-				for (int j = 0; j<h.heap.length; j++) {
-					if (h.heap[j] != null) {
-						System.out.println(String.format("name %s, score %d", h.heap[j].name, h.heap[j].score));
-					}
-				}
-				
-
 			}
 			
 		}
